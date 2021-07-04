@@ -3,32 +3,30 @@ package br.com.alura.loja.testes;
 import java.math.BigDecimal;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
+import br.com.alura.loja.dao.CategoriaDao;
+import br.com.alura.loja.dao.ProdutoDao;
+import br.com.alura.loja.modelo.Categoria;
 import br.com.alura.loja.modelo.Produto;
+import br.com.alura.loja.util.JPAUtil;
 
 public class CadastroDeProduto {
 	
 	public static void main(String[] args) {
+		Categoria celulares = new Categoria("CELULARES");
+		Produto celular = new Produto("Xiaomi Redmi", "Muito legal", new BigDecimal("800"), celulares );
 		
-		Produto celular = new Produto();
-		celular.setNome("Iphone 12");
-		celular.setDescricao("Um celular incrivel");
-		celular.setPreco(new BigDecimal ("5999"));
+		EntityManager em = JPAUtil.getEntityManager();
+		ProdutoDao produtoDao = new ProdutoDao(em);
+		CategoriaDao categoriaDao = new CategoriaDao(em);
 		
-		EntityManagerFactory factory = Persistence.
-				createEntityManagerFactory("loja");
+		em.getTransaction().begin();
 		
-		//criando um objeto do tipo entity manager;
-		EntityManager em = factory.createEntityManager();
+		categoriaDao.cadastrar(celulares);
+		produtoDao.cadastrar(celular);
 		
-		em.getTransaction().begin(); //em pega e inicia transação depois dispara o insert no banco;
-		em.persist(celular);  //inserir meu objeto celular como registro no banco de dado;
-		em.getTransaction().commit(); //comita a transação;
-		em.close();// fecha a transação;
-		
-		
+		em.getTransaction().commit();
+		em.close();
 	}
 
 }
