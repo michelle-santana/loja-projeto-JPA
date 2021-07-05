@@ -15,7 +15,17 @@ public class CategoriaDao {
 	public void cadastrar(Categoria categoria) {
 		this.em.persist(categoria);
 	}
+	
+	//permite fazer update automático
+	public void atualizar(Categoria categoria) {
+		this.em.merge(categoria);
+	}
 
+	//permite excluir
+	public void deletar(Categoria categoria) {
+		categoria = em.merge(categoria);
+		this.em.remove(categoria);
+	}
 }
 
 
